@@ -17,3 +17,8 @@ download_data:
 download_models:
 	@echo "Download models from GCS"
 	@gsutil ls $(model_uri) | gsutil -m cp -r -I $(model_folder)
+
+
+train_milelens:
+	@echo "Train model"
+	python train_milelens.py train_milelens_model --use_wandb --train_ratio=1
