@@ -1,8 +1,4 @@
-import os
-import sys
-
-
-from typing import Union, List
+from typing import List
 import uvicorn
 from fastapi import FastAPI
 from pydantic import BaseModel
@@ -11,7 +7,7 @@ import time
 from advertorial.inference import AdvertorialModel
 
 
-PORT = 8000
+PORT = 8088
 
 
 
@@ -40,7 +36,8 @@ def printTitle(title):
 if __name__ == "__main__":
     """
     examples:
-    curl -X POST -H "Content-Type: application/json" -d '{"texts":["三年沒來日本 第一站先衝迪士尼🇯🇵", "拉麵王子推薦新宿拉麵看了嗎？吃個日本泡麵解拉麵癮"]}' http://127.0.0.1:8000/advertorial
+    uvicorn scripts.main:app --port 8088 --reload
+    curl -X POST -H "Content-Type: application/json" -d '{"texts":["三年沒來日本 第一站先衝迪士尼🇯🇵", "拉麵王子推薦新宿拉麵看了嗎？吃個日本泡麵解拉麵癮"]}' http://127.0.0.1:8088/advertorial
 
     """
     title = f"start API at sport \033[36m{PORT}\033[0m"
