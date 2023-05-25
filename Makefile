@@ -4,11 +4,14 @@ model_uri	:= "$(gcs_uri)/prebuilt_model/"
 data_uri	:= "$(gcs_uri)/data/"
 
 model_folder	:= "./prebuilt_model/"
-data_folder		:= "./data/"
+data_folder	:= "./data/"
+v		:= "v1.1"
+repository      := "asia-east1-docker.pkg.dev/milelens-dev/ml-model-api/advertorial"
 
 init: download_data download_models
 
 prod: download_models
+
 
 download_data:
 	@echo "Download data from GCS"
@@ -22,3 +25,7 @@ download_models:
 train_milelens:
 	@echo "Train model"
 	python train_milelens.py train_milelens_model --use_wandb --train_ratio=1
+
+docker_build_and_push:
+	docker build -t $(repository):$(v) .
+	docker push $(repository):$(v)	
