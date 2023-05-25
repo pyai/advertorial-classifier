@@ -4,7 +4,7 @@ ENV workdir /advertorial
 
 # 設定工作目錄
 WORKDIR ${workdir}
-:q
+
 # 將主要應用程式代碼複製到容器中
 COPY . ${workdir}/
 
