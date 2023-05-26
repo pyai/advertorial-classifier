@@ -18,6 +18,11 @@
 #### Start service
 - `uvicorn scripts.main:app --port 8088 --reload`
 
+#### Model Performance
+|date|version|dataset|records|positive samples|negative samples|hit|miss|accuracy|miss rate|  
+|--|--|--|--|--|--|--|--|--|--|   
+|2023/05/27|v1.3|train|18900|7446|11454|18120|780|0.95873|0.04127|  
+
 #### Access Api
 - `curl -X POST -H "Content-Type: application/json" -d '{"texts": ["三年 沒來日本 第一站先衝迪士尼🇯🇵", "拉麵王子推薦新宿拉麵看了嗎？吃個日本泡麵解拉麵癮"]}' https://advertorial-6tfv4ijbmq-de.a.run.app/advertorial`
 - `curl -X POST -H "Content-Type: application/json" -d '{"texts":["三年沒來日本 第一站先衝迪士尼🇯🇵", "拉麵王子推薦新宿拉麵看了嗎？吃個日本泡麵解拉麵癮"]}' http://127.0.0.1:8088/advertorial`
