@@ -6,7 +6,7 @@ from advertorial import dataset
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 from transformers import DataCollatorWithPadding
 from transformers import TrainingArguments, Trainer
-import wandb
+#import wandb
 import numpy as np
 import evaluate
 
@@ -31,6 +31,19 @@ pretrain_model ="hfl/chinese-bert-wwm-ext"
 tokenizer = AutoTokenizer.from_pretrained(pretrain_model)
 model = AutoModelForSequenceClassification.from_pretrained(
     pretrain_model, num_labels=2, id2label=id2label, label2id=label2id)
+
+def compute_metrics(eval_pred):
+    predictions, labels = eval_pred
+    predictions = np.argmax(predictions, axis=-1)
+    metric = evaluate.load("accuracy")
+    return metric.compute(predictions=predictions, references=labels)
+
+
+def preprocess_function(examples):
+    return tokenizer(examples["text"], truncation=True, max_length=512)
+
+tokenized_advertorial = advertorial_dataset.map(preprocess_function, batched=True)
+data_collator = DataCollatorWithPadding(tokenizer=tokenizer)
 
 # %%
 training_args = TrainingArguments(
