@@ -17,6 +17,7 @@
 
 #### Start service
 - `uvicorn scripts.main:app --port 8088 --reload`
+- ` docker run -it -p 8090:8080 image`
 
 #### Model Performance
 |date|version|dataset|records|positive samples|negative samples|hit|miss|accuracy|miss rate|  

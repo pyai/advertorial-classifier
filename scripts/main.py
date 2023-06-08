@@ -38,7 +38,8 @@ if __name__ == "__main__":
     examples:
     uvicorn scripts.main:app --port 8088 --reload
     curl -X POST -H "Content-Type: application/json" -d '{"texts":["三年沒來日本 第一站先衝迪士尼🇯🇵", "拉麵王子推薦新宿拉麵看了嗎？吃個日本泡麵解拉麵癮"]}' http://127.0.0.1:8088/advertorial
-
+    curl -X POST -H "Content-Type: application/json" -d '{"texts": ["三年 沒來日本 第一站先衝迪士尼🇯🇵", "拉麵王子推薦新宿拉麵看了嗎？吃個日本泡麵解拉麵癮"]}' https://advertorial-6tfv4ijbmq-de.a.run.app/advertorial
+    docker run -it -p 8090:8080 3b1b765a0060
     """
     title = f"start API at sport \033[36m{PORT}\033[0m"
     printTitle(title)

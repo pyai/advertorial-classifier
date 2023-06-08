@@ -2,3 +2,6 @@ data
 notebooks
 __pycache__
 test
+log
+.gitkeep
+archive_model

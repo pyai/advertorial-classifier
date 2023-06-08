@@ -24,7 +24,7 @@ download_models:
 
 train_milelens:
 	@echo "Train model"
-	python train_milelens.py train_milelens_model --use_wandb --train_ratio=1
+	python advertorial/train.py train_milelens_model --train_ratio=0.8 --validation_ratio=0.2
 
 docker_build_and_push:
 	docker build -t $(repository):$(v) .
