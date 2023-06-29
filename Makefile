@@ -26,6 +26,11 @@ train_milelens:
 	@echo "Train model"
 	python advertorial/train.py train_milelens_model --train_ratio=0.8 --validation_ratio=0.2
 
+train_milelens_all_data:
+	@echo "Train model"
+	python advertorial/train.py train_milelens_model --train_ratio=1 --validation_ratio=0
+
+
 docker_build_and_push:
 	docker build -t $(repository):$(v) .
 	docker push $(repository):$(v)	
