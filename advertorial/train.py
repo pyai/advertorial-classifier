@@ -8,43 +8,42 @@ sys.path.insert(0, os.getcwd())
 
 # %%
 from advertorial import dataset
+from advertorial import utils
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 from transformers import DataCollatorWithPadding
 from transformers import TrainingArguments, Trainer
-#import wandb
+import wandb
 import numpy as np
 import evaluate
-from datetime import date
 
-# %%
-# advertorial_dataset = dataset.train_valid_test_from_file(csv_file_path= './data/milelens_advertorial_dataset_formatted.csv')
-# train, validation, test = advertorial_dataset['train'], advertorial_dataset['validation'], advertorial_dataset['test'] 
-# id2label = {0: "no", 1: "yes"}
-# label2id = {"no": 0, "yes": 1}
+def train(envfile:str='.env', 
+          use_wandb:bool=True ):
+    """
+    Train the advertorial classifier model by train/valid set stored in BQ and log the metrics in wandb.
+    To check the environment variables, please check 
 
-# pretrain_model ="hfl/chinese-bert-wwm-ext"
-# tokenizer = AutoTokenizer.from_pretrained(pretrain_model)
-# model = AutoModelForSequenceClassification.from_pretrained(
-#     pretrain_model, num_labels=2, id2label=id2label, label2id=label2id)
+    Args:
+        envfile (str, optional): Environment variables art listed in here. Defaults to '.env'.
 
+    Returns:
+        _type_: None
+    """
+    # check or set environment variables
+    utils.check_env(envfile)
+    today = utils.set_today()
+    log_dir = utils.get_based_path('log/')
+    prebuilt_dir = utils.get_based_path('prebuilt_model/')
+    
+    print(f'use_wandb:{use_wandb}')
+    wandb.login(key=os.environ['WANDB_KEY'], 
+                host=os.environ['WANDB_BASE_URL'])
+    wandb.init(
+        mode= "online" if use_wandb else "disabled",
+        project=os.environ['WANDB_PROJECT'],
+        config={'epochs':10}
+    )
 
-def train(train_ratio=0.8, validation_ratio=0.2):
-
-#train_ratio, validation_ratio = 1, 0
-
-    advertorial_dataset = dataset.train_valid_test_from_file(csv_file_path= './data/milelens_advertorial_dataset_formatted.csv', train_ratio=train_ratio, validation_ratio=validation_ratio)
-    today = date.today()
-
-    train = advertorial_dataset['train']
-    train.to_csv(f'./data/train_set_{today}.csv')
-
-    if 'validation' in advertorial_dataset:
-        valid = advertorial_dataset['validation']
-        valid.to_csv(f'./data/valid_set_{today}.csv')
-
-    if 'test' in advertorial_dataset:
-        test = advertorial_dataset['test']
-        test.to_csv(f'./data/test_set_{today}.csv')
+    advertorial_dataset = dataset.train_valid_test_from_file()
 
     id2label = {0: "no", 1: "yes"}
     label2id = {"no": 0, "yes": 1}
@@ -62,50 +61,41 @@ def train(train_ratio=0.8, validation_ratio=0.2):
 
 
     def preprocess_function(examples):
-        return tokenizer(examples["text"], truncation=True, max_length=512)
+        return tokenizer(examples["text"], padding=True, truncation=True, max_length=512)
 
     tokenized_advertorial = advertorial_dataset.map(preprocess_function, batched=True)
     data_collator = DataCollatorWithPadding(tokenizer=tokenizer)
 
     training_args = TrainingArguments(
-        #logging_steps=10000,
-        #save_steps=10000,
-        output_dir="prebuilt_model/log",
+        output_dir=log_dir,
         learning_rate=3e-5,
         per_device_train_batch_size=16,
         per_device_eval_batch_size=16,
-        num_train_epochs=10,
+        num_train_epochs=1,
         weight_decay=0.01,
-        #evaluation_strategy="steps"
         evaluation_strategy="epoch",
         save_strategy="epoch",
-        #fp16=True,
-        #load_best_model_at_end=True,
-        #push_to_hub=True,
+        save_total_limit=1
     )
 
-    if train_ratio == 1.0:
-        trainer = Trainer(
-            model=model,
-            args=training_args,
-            train_dataset=tokenized_advertorial["train"],
-            eval_dataset=tokenized_advertorial["train"],
-            tokenizer=tokenizer,
-            data_collator=data_collator,
-            compute_metrics=compute_metrics,
-        )
-    else:
-        trainer = Trainer(
-            model=model,
-            args=training_args,
-            train_dataset=tokenized_advertorial["train"],
-            eval_dataset=tokenized_advertorial["validation"],
-            tokenizer=tokenizer,
-            data_collator=data_collator,
-            compute_metrics=compute_metrics,
-        )
+    trainer = Trainer(
+        model=model,
+        args=training_args,
+        train_dataset=tokenized_advertorial["train"],
+        eval_dataset=tokenized_advertorial["test"],
+        tokenizer=tokenizer,
+        data_collator=data_collator,
+        compute_metrics=compute_metrics,
+    )
 
     trainer.train()
+
+    #check_point = glob.glob('./prebuilt_model/checkpoint-*')[-1]
+    #os.system(f'mv {check_point} ./prebuilt_model/{today}-model' )
+    print(log_dir)
+    trainer.save_model(prebuilt_dir + today)
+    trainer.save_model(prebuilt_dir + "cmml_advertorial_post_classifier")
+
 
 if __name__ == '__main__':
     fire.Fire({'train_milelens_model':train})
