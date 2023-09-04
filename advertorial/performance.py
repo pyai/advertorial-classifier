@@ -90,6 +90,7 @@ def summary(envfile='.env'):
 
     # get bq settings from environment variable
     project_id, dataset_id = os.environ['GCP_PROJECT'], os.environ['GCP_BQ_DATASET']
+    region=os.environ['GCP_REGION']
     meta_table_id = os.environ['GCP_BQ_META_TABLE']
     model_uri_base = os.environ['GCS_MODEL_URI_BASE']
     table = f'`{project_id}.{dataset_id}.{meta_table_id}`'
@@ -99,16 +100,19 @@ def summary(envfile='.env'):
                               'test_acc':test_perf['accuracy'].item()})
     
     # Load BQ table into dataframe
-    client = bigquery.Client()
+    client = bigquery.Client(project=project_id, 
+                             location=region)
     sql = f"DELETE FROM {table} WHERE `date`=DATE({year},{month},{day})"
     client.query(sql)
     utils.logger.info(sql)
+    print(sql)
 
     sql = f"INSERT INTO {table} (model_name, train_set_meta, test_set_meta, `date`, \
             model_uri, model_performance) VALUES ('{model_name}', '{train_json_str}', \
             '{test_json_str}', DATE({year},{month},{day}), '{model_uri}', '{performance}');"
     client.query(sql)
     utils.logger.info(sql)
+    print(sql)
 
 if __name__ == '__main__':
     fire.Fire({'summary_milelens_model':summary})

@@ -1,7 +1,5 @@
 import os
-from datasets import load_dataset, DatasetDict
-from typing import Union
-import pandas as pd
+from datasets import DatasetDict
 from datasets import Dataset, DatasetDict
 from google.cloud import bigquery
 from advertorial import utils
@@ -72,17 +70,22 @@ def train_valid_test_from_file(envfile='.env') ->DatasetDict:
     # set environment variables
     utils.check_env(envfile)
 
+
     # get bq settings from environment variable
     project_id, dataset_id = os.environ['GCP_PROJECT'], os.environ['GCP_BQ_DATASET']
     train_table_id, test_table_id = os.environ['GCP_BQ_TRAIN_TABLE'], os.environ['GCP_BQ_TEST_TABLE']
-
+    region=os.environ['GCP_REGION']
+    
     # Load BQ table into dataframe
-    client = bigquery.Client()
+    client = bigquery.Client(project=project_id,
+                             location=region)
     sql = f"SELECT post_text AS text, cate AS label FROM `{project_id}.{dataset_id}.{train_table_id}`"
-    train = client.query(sql).to_dataframe().astype({'label': 'int16'}).sample(100)
+    train = client.query(sql).to_dataframe().astype({'label': 'int16'})
+    print(sql)
 
     sql = f"SELECT post_text AS text, cate AS label FROM `{project_id}.{dataset_id}.{test_table_id}`"
-    test = client.query(sql).to_dataframe().astype({'label': 'int16'}).sample(20)
+    test = client.query(sql).to_dataframe().astype({'label': 'int16'})
+    print(sql)
 
     # Convert the pandas DataFrame into a Hugging Face Dataset
     train_dataset = Dataset.from_pandas(train)

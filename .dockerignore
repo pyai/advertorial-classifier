@@ -5,3 +5,4 @@ test
 .gitkeep
 archive_model
 *_bk.py
+wandb
