@@ -1,0 +1,12 @@
+workerPoolSpecs:
+  machineSpec:
+    machineType: n1-highmem-8
+    acceleratorType: NVIDIA_TESLA_P100
+    acceleratorCount: 1
+  replicaCount: 1
+  containerSpec:
+    imageUri: asia.gcr.io/milelens-dev/ml-advertorial-post-classifier-base:latest
+    # args:
+    # - port=8500
+    # command:
+    # - start

@@ -9,7 +9,7 @@ from transformers import AutoTokenizer, AutoModelForSequenceClassification
 class AdvertorialModel:
     """Advertorial classification inference model"""
 
-    def __init__(self, model_path:str='./prebuilt_model/230527_chinese_bert_wwm_ext', use_gpu:bool=False):
+    def __init__(self, model_path:str='./prebuilt_model/230720_chinese_bert_wwm_ext', use_gpu:bool=False):
         self.model_path = model_path
         self.device = "cuda:0" if torch.cuda.is_available() and use_gpu else "cpu"
         self.tokenizer = AutoTokenizer.from_pretrained(self.model_path)
