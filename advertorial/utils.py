@@ -51,4 +51,4 @@ def get_based_path(path: str):
     elif os.path.exists(local_path):
         return local_path
     else:
-        raise FileNotFoundError(f"Path `{path}` not exists in `{gcs_path}` or `{local_path}`")
+        raise FileNotFoundError(f"`{gcs_path}` or `{local_path}` not exists")
