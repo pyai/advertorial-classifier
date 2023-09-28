@@ -1,5 +1,5 @@
 variables:
-  gcs_uri: "gs://milelens_ml/advertorial_classification"
+  gcs_uri: "gs://milelens_ml/advertorial_post_classification"
 
 image: docker:latest
 
