@@ -1,0 +1,50 @@
+variables:
+  gcs_uri: "gs://milelens_ml/advertorial_classification"
+
+image: docker:latest
+
+stages:
+  - build # Build base image to train model using vertex ai pipeline
+  - deploy
+
+prd-build:
+  stage: build
+  only:
+    - main
+  image: google/cloud-sdk
+  services:
+    - docker:dind
+  script:
+    - echo $CMML_GITHUB_DEPLOY | base64 -di > cmml-deploy-key-milelens &&
+      chmod 600 cmml-deploy-key-milelens && eval $(ssh-agent -s) && ssh-add cmml-deploy-key-milelens &&
+      mkdir ~/.ssh && ssh-keyscan github.com >> ~/.ssh/known_hosts
+    # - git submodule update --init --recursive
+    - echo $GCP_MILELENS_SERVICE_KEY_PROD > gcloud-service-key.json # Google Cloud service accounts
+    - gcloud auth activate-service-account --key-file gcloud-service-key.json
+    - gcloud auth configure-docker # Configure docker environment
+    - echo $GCP_MILELENS_PROJECT_ID_PROD
+    - gcloud config set project $GCP_MILELENS_PROJECT_ID_PROD
+    - gcloud builds submit --config=cloudbuild_train.yml --project=$GCP_MILELENS_PROJECT_ID_PROD --region=asia-east1
+      --gcs-source-staging-dir=$gcs_uri/cloudbuild/prd/source .
+
+prod-deploy:
+  stage: deploy
+  only:
+    - main # This pipeline stage will run on this branch alone
+  when:
+    manual
+  image: google/cloud-sdk
+  services:
+    - docker:dind
+  script:
+    - echo $CMML_GITHUB_DEPLOY | base64 -di > cmml-deploy-key-milelens &&
+      chmod 600 cmml-deploy-key-milelens && eval $(ssh-agent -s) && ssh-add cmml-deploy-key-milelens &&
+      mkdir ~/.ssh && ssh-keyscan github.com >> ~/.ssh/known_hosts
+    # - git submodule update --init --recursive
+    - echo $GCP_MILELENS_SERVICE_KEY_PROD > gcloud-service-key.json # Google Cloud service accounts
+    - gcloud auth activate-service-account --key-file gcloud-service-key.json
+    - gcloud auth configure-docker # Configure docker environment
+    - echo $GCP_MILELENS_PROJECT_ID_PROD
+    - gcloud config set project $GCP_MILELENS_PROJECT_ID_PROD
+    - gcloud builds submit --config=cloudbuild_prod.yml --project=$GCP_MILELENS_PROJECT_ID_PROD --region=asia-east1
+      --gcs-source-staging-dir=$gcs_uri/cloudbuild/prd/source .

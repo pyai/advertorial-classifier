@@ -1,0 +1,21 @@
+# File: cloudbuild_train.yml
+
+substitutions:
+  _SERVICE_NAME: "ml-advertorial-post-classifier"
+
+steps:
+  # build the base container image for training
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [ 'build', '-t', 'asia.gcr.io/milelens-dev/ml-advertorial-post-classifier-base:latest', '.', '-f', 'base.Dockerfile' ]
+    # push the container image for training
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [ 'push', 'asia.gcr.io/milelens-dev/ml-advertorial-post-classifier-base:latest' ]
+    # deploy pipeline
+  - name: 'asia.gcr.io/milelens-dev/ml-advertorial-post-classifier-base:latest'
+    args: [ '-m', 'scripts.pipe', 'compile' ]
+  - name: 'asia.gcr.io/milelens-dev/ml-advertorial-post-classifier-base:latest'
+    args: [ '-m', 'scripts.pipe', 'run' ]
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+  substitution_option: ALLOW_LOOSE

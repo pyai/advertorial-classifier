@@ -1,0 +1,39 @@
+# File: cloudbuild_prod.yml
+
+
+gcs_uri		:= "gs://milelens_ml/advertorial_classification"
+model_uri	:= "$(gcs_uri)/prebuilt_model/"
+data_uri	:= "$(gcs_uri)/data/"
+gcp_region  := "asia-east1"
+training_job_name := "asia.gcr.io/milelens-dev/ml-advertorial-post-classifier-base"
+
+repository-base := "asia.gcr.io/milelens-dev/ml-advertorial-post-classifier-base"
+repository  := "asia.gcr.io/milelens-dev/ml-advertorial-post-classifier"
+
+ml-advertorial-post-classifier-base
+
+
+substitutions:
+  _SERVICE_NAME: "ml-advertorial-post-classifier"
+  #_YOUTUBE_API_KEYS: "DEFAULT_VALUE"
+
+steps:
+  - name: 'ubuntu'
+    args: [ 'mkdir', 'prebuilt_model' ]
+  - name: 'gcr.io/cloud-builders/gsutil'
+    args: [ '-m', 'cp', '-r', "gs://milelens_ml/advertorial_classification/prebuilt_model/cmml_advertorial_post_classifier", 'prebuilt_model/' ]
+    # build the container image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [ 'build', '-t', 'asia.gcr.io/milelens-dev/ml-advertorial-post-classifier:latest', '.' ]
+    # push the container image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [ 'push', 'asia.gcr.io/milelens-dev/ml-advertorial-post-classifier:latest' ]
+    # deploy to Cloud Run
+  - name: "gcr.io/cloud-builders/gcloud"
+    args: [ 'run', 'deploy', '${_SERVICE_NAME}', '--image', 'asia.gcr.io/milelens-dev/ml-advertorial-post-classifier:latest','--region', 'asia-east1', '--platform', 'managed', '--allow-unauthenticated' ]
+  - name: "gcr.io/cloud-builders/gcloud"
+    args: [ 'run', 'services',  'update-traffic', '${_SERVICE_NAME}', '--to-latest', '--region', 'asia-east1']
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+  substitution_option: ALLOW_LOOSE

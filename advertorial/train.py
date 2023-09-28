@@ -15,6 +15,7 @@ from transformers import TrainingArguments, Trainer
 import wandb
 import numpy as np
 import evaluate
+epochs=10
 
 def train(envfile:str='.env', 
           use_wandb:bool=True ):
@@ -40,7 +41,7 @@ def train(envfile:str='.env',
     wandb.init(
         mode= "online" if use_wandb else "disabled",
         project=os.environ['WANDB_PROJECT'],
-        config={'epochs':10}
+        config={'epochs':epochs}
     )
 
     advertorial_dataset = dataset.train_valid_test_from_file()
@@ -71,7 +72,7 @@ def train(envfile:str='.env',
         learning_rate=3e-5,
         per_device_train_batch_size=16,
         per_device_eval_batch_size=16,
-        num_train_epochs=10,
+        num_train_epochs=epochs,
         weight_decay=0.01,
         evaluation_strategy="epoch",
         save_strategy="epoch",
@@ -95,6 +96,9 @@ def train(envfile:str='.env',
     print(log_dir)
     trainer.save_model(prebuilt_dir + today)
     trainer.save_model(prebuilt_dir + "cmml_advertorial_post_classifier")
+
+    model_folder = today
+    return model_folder
 
 
 if __name__ == '__main__':
