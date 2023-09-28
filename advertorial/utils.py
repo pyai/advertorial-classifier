@@ -56,8 +56,7 @@ def check_env(envfile:str='.env'):
         print(f'env var: {key}={value}')
         os.environ[key] = value
 
-def set_today(file = 'today.txt', today_str:Optional[str]=''):
-    today = today_str
+def set_today(file = 'today.txt', today:str=''):
     pattern = r'20\d\d(0[1-9]|1[0-2])(0[1-9]|1[0-9]|2[0-9]|30|31)'
     result = re.match(pattern, today)
     

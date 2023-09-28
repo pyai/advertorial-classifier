@@ -56,14 +56,14 @@ job_id = f"{pipeline_name}-{datetime.datetime.now().strftime('%y%m%d-%H%M%S')}"
 @component(base_image='asia.gcr.io/milelens-dev/ml-advertorial-post-classifier-base:latest')
 def train() -> str:
     from advertorial.train import train
-    model_folder = train()
-    return model_folder
+    today = train()
+    return today
 
 
 @component(base_image='asia.gcr.io/milelens-dev/ml-advertorial-post-classifier-base:latest')
-def evaluate(model_folder: str):
+def evaluate(today: str):
     from advertorial.performance import summary
-    summary(model_folder=model_folder)
+    summary(today=today)
 
 
 @kfp.dsl.pipeline(

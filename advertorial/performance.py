@@ -64,12 +64,12 @@ def perf_report(model, dataset, name='train'):
     return error_df, performance_df
 
 
-def summary(envfile:str ='.env', model_folder:Optional[str]=None):
+def summary(envfile:str ='.env', today:str=''):
     advertorial_dataset = dataset.train_valid_test_from_file()
     train = advertorial_dataset['train']
     test = advertorial_dataset['test']
 
-    today = utils.set_today(today_str=model_folder)
+    today = utils.set_today(today=today)
     log_dir = utils.get_based_path('prebuilt_model/')
 
     #model_name =  glob.glob('./prebuilt_model/*-model')[-1]
