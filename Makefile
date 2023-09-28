@@ -41,7 +41,7 @@ train_milelens_all_data:
 docker_image_to_training_job_base: docker_build_and_push_base create_training_job_base
 
 docker_build_and_push_base:
-	docker build -t $(repository-base):$(v) . -f training_job.Dockerfile
+	docker build -t $(repository-base):$(v) . -f base.Dockerfile
 	docker push $(repository-base):$(v)	
 
 create_training_job_base:
@@ -49,5 +49,5 @@ create_training_job_base:
 		--region=${gcp_region} \
 		--display-name=${training_job_name} \
 		--labels=ml=advertorial_post_classifier \
-		--config=worker_pool_specs.yaml \
+		--config=worker_pool_specs.yml \
 		--args='-m','scripts.app','train_then_summary'
