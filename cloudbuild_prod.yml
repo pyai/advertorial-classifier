@@ -8,7 +8,7 @@ steps:
   - name: 'ubuntu'
     args: [ 'mkdir', 'prebuilt_model' ]
   - name: 'gcr.io/cloud-builders/gsutil'
-    args: [ '-m', 'cp', '-r', "gs://milelens_ml/advertorial_classification/prebuilt_model/cmml_advertorial_post_classifier", 'prebuilt_model/' ]
+    args: [ '-m', 'cp', '-r', "gs://milelens_ml/advertorial_post_classification/prebuilt_model/cmml_advertorial_post_classifier", 'prebuilt_model/' ]
     # build the container image
   - name: 'gcr.io/cloud-builders/docker'
     args: [ 'build', '-t', 'asia.gcr.io/milelens-dev/ml-advertorial-post-classifier:latest', '.' ]
