@@ -6,3 +6,4 @@ test
 archive_model
 *_bk.py
 wandb
+*_bk*

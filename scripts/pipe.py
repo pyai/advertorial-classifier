@@ -31,6 +31,10 @@ blob_name = f"advertorial_post_classification/pipeline/{compiled_pipe_file}"
 job_id = f"{pipeline_name}-{datetime.datetime.now().strftime('%y%m%d-%H%M%S')}"
 
 
+print(f'model_project={model_project}, project_id={project_id}, dataset_id={dataset_id}, region={region}, bucket_name={bucket_name}, meta_table_id={meta_table_id}, model_uri_base={model_uri_base}')
+print('--'*30)
+print(f'pipeline_name={pipeline_name}, pipeline_root={pipeline_root}, compiled_pipe_file={compiled_pipe_file}, pipeline_template_file={pipeline_template_file}, pipeline_labels={pipeline_labels}, blob_name={blob_name}, job_id={job_id}')
+
 # -- project_id = "milelens-dev"
 # -- location = "asia-east1"
 # -- bucket_name = "milelens_ml"
@@ -90,7 +94,7 @@ def pipeline():
     train_task = train().set_cpu_limit('8').set_memory_limit('60G').add_node_selector_constraint(
         'NVIDIA_TESLA_P100')
 
-    evaluate_task = evaluate(model_folder=train_task.output).set_cpu_limit('8').set_memory_limit(
+    evaluate_task = evaluate(today=train_task.output).set_cpu_limit('8').set_memory_limit(
         '30G').add_node_selector_constraint('NVIDIA_TESLA_P100')
     evaluate_task.after(train_task)
 
