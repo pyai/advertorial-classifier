@@ -3,15 +3,15 @@ import torch.nn.functional as F
 import numpy as np
 from typing import List
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
-
+from advertorial import utils
 
 
 class AdvertorialModel:
     """Advertorial classification inference model"""
 
     # def __init__(self, model_path:str='./prebuilt_model/230720_chinese_bert_wwm_ext', use_gpu:bool=False):
-    def __init__(self, model_path:str='./prebuilt_model/cmml_advertorial_post_classifier', use_gpu:bool=False):
-        self.model_path = model_path
+    def __init__(self, model_path:str='prebuilt_model/cmml_advertorial_post_classifier', use_gpu:bool=False):
+        self.model_path = utils.get_based_path(model_path)
         self.device = "cuda:0" if torch.cuda.is_available() and use_gpu else "cpu"
         self.tokenizer = AutoTokenizer.from_pretrained(self.model_path)
         self.model = AutoModelForSequenceClassification.from_pretrained(self.model_path).to(self.device)
