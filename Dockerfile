@@ -7,6 +7,7 @@ WORKDIR ${workdir}
 
 # 將主要應用程式代碼複製到容器中
 COPY . ${workdir}/
+COPY prebuilt_model/cmml_advertorial_post_classifier prebuilt_model/cmml_advertorial_post_classifier
 
 # 安裝所需的相依套件
 RUN pip install -r requirements.txt
