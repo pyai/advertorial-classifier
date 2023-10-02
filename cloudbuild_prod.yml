@@ -17,7 +17,7 @@ steps:
     args: [ 'push', 'asia.gcr.io/milelens-dev/ml-advertorial-post-classifier-app:latest' ]
     # deploy to Cloud Run
   - name: "gcr.io/cloud-builders/gcloud"
-    args: [ 'run', 'deploy', '${_SERVICE_NAME}', '--image', 'asia.gcr.io/milelens-dev/ml-advertorial-post-classifier-app:latest','--region', 'asia-east1', '--platform', 'managed', '--allow-unauthenticated' ]
+    args: [ 'run', 'deploy', '${_SERVICE_NAME}', '--image', 'asia.gcr.io/milelens-dev/ml-advertorial-post-classifier-app:latest','--region', 'asia-east1', '--platform', 'managed', '--allow-unauthenticated', '--memory', '8Gi', --cpu, '2']
   - name: "gcr.io/cloud-builders/gcloud"
     args: [ 'run', 'services',  'update-traffic', '${_SERVICE_NAME}', '--to-latest', '--region', 'asia-east1']
 
