@@ -90,24 +90,42 @@ def pipeline():
     #     location="asia-east1",
     #     worker_pool_specs=[worker_pool_specs]
     # )
+    try:
+        print('in `def pipeline()`')
+        print('a')
+        train_task = train().set_cpu_limit('8').set_memory_limit('60G').add_node_selector_constraint(
+            'NVIDIA_TESLA_P100')
 
-    train_task = train().set_cpu_limit('8').set_memory_limit('60G').add_node_selector_constraint(
-        'NVIDIA_TESLA_P100')
-
-    evaluate_task = evaluate(today=train_task.output).set_cpu_limit('8').set_memory_limit(
-        '30G').add_node_selector_constraint('NVIDIA_TESLA_P100')
-    evaluate_task.after(train_task)
+        print('b')
+        evaluate_task = evaluate(today=train_task.output).set_cpu_limit('8').set_memory_limit(
+            '30G').add_node_selector_constraint('NVIDIA_TESLA_P100')
+        
+        print('c')
+        evaluate_task.after(train_task)
+        print('d')
+    except Exception as e:
+        print(f'Error:\n{e}')
 
 
 def do_compile():
-    compiler.Compiler().compile(pipeline_func=pipeline, package_path=compiled_pipe_file)
-    # compiler.Compiler().compile(pipeline_func=pipeline, package_path='ig_post_token_to_pkl.json')
+    try:
+        print('in `def do_compile()`')
+        print(1)
+        compiler.Compiler().compile(pipeline_func=pipeline, package_path=compiled_pipe_file)
+        # compiler.Compiler().compile(pipeline_func=pipeline, package_path='ig_post_token_to_pkl.json')
 
-    # Upload compiled file
-    client = storage.Client()
-    bucket = client.bucket(bucket_name)
-    blob = bucket.blob(blob_name)
-    blob.upload_from_filename(compiled_pipe_file)
+        # Upload compiled file
+        print(2)
+        client = storage.Client()
+        print(3)
+        bucket = client.bucket(bucket_name)
+        print(4)
+        blob = bucket.blob(blob_name)
+        print(5)
+        blob.upload_from_filename(compiled_pipe_file)
+        print(6)
+    except Exception as e:
+        print(f'Error:\n{e}')
 
 
 def run():
