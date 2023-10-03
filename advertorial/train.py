@@ -15,7 +15,7 @@ from transformers import TrainingArguments, Trainer
 import wandb
 import numpy as np
 import evaluate
-epochs=1
+epochs=20
 
 def train(envfile:str='.env', 
           use_wandb:bool=True ):
