@@ -10,8 +10,10 @@ WORKDIR ${workdir}
 # 將主要應用程式代碼複製到容器中
 COPY . ${workdir}/
 
+
 # 安裝所需的相依套件
-RUN pip install -r requirements.txt
+RUN mkdir log && \
+    pip install -r requirements.txt
 
 
 # 暴露容器內部的 8080 埠
