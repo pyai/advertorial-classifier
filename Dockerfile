@@ -1,5 +1,6 @@
 # 使用 Python 3.9 作為基礎映像
-FROM python:3.9
+#FROM python:3.9
+FROM asia-docker.pkg.dev/vertex-ai/training/pytorch-gpu.1-13.py310:latest
 ENV workdir /advertorial
 
 # 設定工作目錄
