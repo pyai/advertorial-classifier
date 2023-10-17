@@ -29,3 +29,7 @@
 - `curl -X POST -H "Content-Type: application/json" https://ml-advertorial-post-classifier-6tfv4ijbmq-de.a.run.app/performance`
 - `curl -X POST -H "Content-Type: application/json" -d '{"texts":["三年沒來日本 第一站先衝迪士尼🇯🇵", "拉麵王子推薦新宿拉麵看了嗎？吃個日本泡麵解拉麵癮"]}' http://127.0.0.1:8088/advertorial`
 - `curl -X POST -H "Content-Type: application/json"  http://127.0.0.1:8088/performance`
+
+
+#### Dataset version
+20231017
