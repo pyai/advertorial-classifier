@@ -28,6 +28,7 @@
 - `curl -X POST -H "Content-Type: application/json" -d '{"texts": ["三年 沒來日本 第一站先衝迪士尼🇯🇵", "拉麵王子推薦新宿拉麵看了嗎？吃個日本泡麵解拉麵癮"]}'https://ml-advertorial-post-classifier-6tfv4ijbmq-de.a.run.app/advertorial`
 - `curl -X POST -H "Content-Type: application/json" https://ml-advertorial-post-classifier-6tfv4ijbmq-de.a.run.app/performance`
 - `curl -X POST -H "Content-Type: application/json" -d '{"texts":["三年沒來日本 第一站先衝迪士尼🇯🇵", "拉麵王子推薦新宿拉麵看了嗎？吃個日本泡麵解拉麵癮"]}' http://127.0.0.1:8088/advertorial`
+- `curl -X POST -H "Content-Type: application/json" -d '{"texts": ["三年 沒來日本 第一站先衝迪士尼🇯🇵", "拉麵王子推薦新宿拉麵看了嗎？吃個日本泡麵解拉麵癮", "【Stanley】這就是蓋倫最強套路！BDS Adam應該好好學一下！只要兩把黃雙就傷害炸裂！享受極致跑速邊線馳騁的快感！胖叔叔不用當兵竟然是因為長相太蟀...嗎？\n\nhttps://www.youtube.com/watch?v=ixcjAE0ORjU"]}' https://ml-advertorial-post-classifier-6tfv4ijbmq-de.a.run.app/advertorial`
 - `curl -X POST -H "Content-Type: application/json"  http://127.0.0.1:8088/performance`
 
 
